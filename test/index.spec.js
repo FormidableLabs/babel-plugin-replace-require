@@ -14,7 +14,7 @@ describe("index", () => {
   it("TODO REMOVE", () => {
     // eslint-disable-next-line
     const trans = babel.transform(`import _ from "FOO_TOKEN/lodash"`, getBabelOps({
-      FOO_TOKEN: "foo"
+      FOO_TOKEN: "foo('TODO_YO')"
     }));
     console.log(`\n\n${trans.code}\n\n`); // eslint-disable-line
   });

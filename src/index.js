@@ -1,3 +1,4 @@
+import * as babylon from "babylon";
 
 export default function ({ types: t }) {
   return {
@@ -27,8 +28,10 @@ export default function ({ types: t }) {
           const replace = opts[Object.keys(opts).find((k) => k === first)];
           if (replace) {
             // Rewrite the `require`, then the module argument.
-            // TODO: Need real AST replacement for the option, not just a string replace.
-            node.callee.name = "require('TODO_YO')";
+
+            // TODO HERE -- HAVE EXTRA ; at end!!!
+            // https://github.com/babel/babylon/issues/210
+            node.callee = babylon.parse(replace);
             args[0].value = mod;
           }
 
