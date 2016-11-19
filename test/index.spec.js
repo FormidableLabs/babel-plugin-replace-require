@@ -1,35 +1,49 @@
+const expect = require("chai").expect;
+
 const babel = require("babel-core");
 const pluginPath = require.resolve("../lib/index");
 
-const getBabelOps = (opts) => {
-  return {
+const transform = (code, opts) => {
+  return babel.transform(code, {
     "presets": ["es2015"],
     "plugins": [
       [pluginPath, opts]
     ]
-  };
+  }).code;
 };
 
-describe("index", () => {
-  it("TODO REMOVE", () => {
-    // eslint-disable-next-line
-    const trans = babel.transform(`import _ from "FOO_TOKEN/lodash"`, getBabelOps({
-      FOO_TOKEN: "foo('TODO_YO')"
-    }));
-    console.log(`\n\n${trans.code}\n\n`); // eslint-disable-line
-  });
+const expected = (mod) => `
+'use strict';
 
+var _${mod} = require('${mod}');
+
+var _${mod}2 = _interopRequireDefault(_${mod});
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }`
+.trim();
+
+describe("index", () => {
   describe("import", () => {
-    it("should not change with empty options");
-    it("should leave unmatched imports unchanged");
-    it("should replace matched token require");
+    it("doesn't change with empty options", () => {
+      var code;
+      code = "import _ from 'lodash'";
+      expect(transform(code)).to.equal(expected("lodash"));
+
+
+
+    });
+
+    it("leaves unmatched imports unchanged");
+    it("replaces matched token require");
   });
 
   describe("require", () => {
-    it("should not change with empty options");
-    it("should not change require.resolve even with token");
-    it("should leave unmatched requires unchanged");
-    it("should replace matched token require");
-    it("should replace matched token in nested require");
+    it("errors on invalid code expressions");
+    it("doesn't change with empty options");
+    it("doesn't change with empty options");
+    it("doesn't change require.resolve even with token");
+    it("leaves unmatched requires unchanged");
+    it("replaces matched token require");
+    it("replaces matched token in nested require");
   });
 });

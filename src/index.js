@@ -3,16 +3,6 @@ import * as babylon from "babylon";
 export default function ({ types: t }) {
   return {
     visitor: {
-      // import _ from "TOKEN/lodash"
-      ImportDeclaration(path, state) {
-        const src = path.node.source.value;
-        const opts = state.opts;
-
-        // TODO: LIKELY IGNORE SO WE _JUST_ REWRITE THE REQUIRE.
-
-        console.log("TODO HERE import -> source", src, opts); // eslint-disable-line
-      },
-
       // require("TOKEN/lodash")
       CallExpression(path, state) {
         const node = path.node;
@@ -31,13 +21,15 @@ export default function ({ types: t }) {
 
             // Parse the matched replacement expression and replace callee.
             // https://github.com/babel/babylon/issues/210
-            node.callee = babylon.parse(`expr=${replace}`).program.body.pop().expression.right;
+            try {
+              node.callee = babylon.parse(`expr=${replace}`).program.body.pop().expression.right;
+            } catch (err) {
+              throw path.buildCodeFrameError(err);
+            }
 
             // Replace module argument with token stripped.
             args[0].value = mod;
           }
-
-          console.log("TODO HERE require -> source", src, replace, mod); // eslint-disable-line
         }
       }
     }
