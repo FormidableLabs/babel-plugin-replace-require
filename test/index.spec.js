@@ -30,5 +30,6 @@ describe("index", () => {
     it("should not change require.resolve even with token");
     it("should leave unmatched requires unchanged");
     it("should replace matched token require");
+    it("should replace matched token in nested require");
   });
 });

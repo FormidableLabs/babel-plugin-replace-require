@@ -27,7 +27,8 @@ export default function ({ types: t }) {
           const replace = opts[Object.keys(opts).find((k) => k === first)];
           if (replace) {
             // Rewrite the `require`, then the module argument.
-            node.callee.name = "TODO"; // really need ast rewrite from source.
+            // TODO: Need real AST replacement for the option, not just a string replace.
+            node.callee.name = "require('TODO_YO')";
             args[0].value = mod;
           }
 
