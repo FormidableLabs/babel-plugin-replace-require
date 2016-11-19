@@ -36,6 +36,10 @@ $ npm install babel-plugin-replace-require
 
 ## Usage
 
+```
+// TODO: DOCUMENT Expressions
+```
+
 **.babelrc**
 
 ```json

@@ -29,9 +29,11 @@ export default function ({ types: t }) {
           if (replace) {
             // Rewrite the `require`, then the module argument.
 
-            // TODO HERE -- HAVE EXTRA ; at end!!!
+            // Parse the matched replacement expression and replace callee.
             // https://github.com/babel/babylon/issues/210
-            node.callee = babylon.parse(replace);
+            node.callee = babylon.parse(`expr=${replace}`).program.body.pop().expression.right;
+
+            // Replace module argument with token stripped.
             args[0].value = mod;
           }
 
