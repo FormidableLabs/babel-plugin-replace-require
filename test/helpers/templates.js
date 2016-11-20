@@ -1,4 +1,5 @@
 "use strict";
+/*eslint max-len:["error",{"code":100,"ignoreTemplateLiterals":true}]*/
 
 const path = require("path");
 
