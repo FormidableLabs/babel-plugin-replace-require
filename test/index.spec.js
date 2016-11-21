@@ -77,13 +77,24 @@ describe("index", () => {
   });
 
   describe("require", () => {
-    it.skip("errors on invalid code expressions", () => {
-      const TOKEN = "BAD \\";
-      const trans = (c) => transform(c, { TOKEN });
+    it("errors on invalid code expressions without token match", () => {
       let code;
 
       code = "require('lodash')";
-      expect(trans(code)).to.equal(tmpl.require("lodash", TOKEN));
+      expect(() => transform(code, { T: "BAD BAD" })).to.throw(/Unexpected token/);
+
+      code = "const _ = require('lodash')";
+      expect(() => transform(code, { T: "BAD \\" })).to.throw(/Unicode escape/);
+    });
+
+    it("errors on invalid code expressions with token match", () => {
+      let code;
+
+      code = "require('T/lodash')";
+      expect(() => transform(code, { T: "BAD BAD" })).to.throw(/Unexpected token/);
+
+      code = "const _ = require('T/lodash')";
+      expect(() => transform(code, { T: "BAD \\" })).to.throw(/Unicode escape/);
     });
 
     it("doesn't change with empty options");
