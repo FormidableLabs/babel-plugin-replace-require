@@ -97,9 +97,34 @@ describe("index", () => {
       expect(() => transform(code, { T: "BAD \\" })).to.throw(/Unicode escape/);
     });
 
-    it("doesn't change with empty options");
-    it("doesn't change with empty options");
-    it("doesn't change require.resolve even with token");
+    it("doesn't change with empty options", () => {
+      let code;
+
+      code = "require('lodash')";
+      expect(transform(code)).to.equal(tmpl.require("lodash"));
+
+      code = "const _ = require('lodash')";
+      expect(transform(code)).to.equal(tmpl.requireAssign("lodash", "_"));
+    });
+
+    it("doesn't change require.resolve even with token", () => {
+      let code;
+
+      code = "require.resolve('lodash')";
+      expect(transform(code)).to.equal(tmpl.require("lodash", "require.resolve"));
+
+      code = "require.resolve('T/lodash')";
+      expect(transform(code, { T: "foo" }))
+        .to.equal(tmpl.require("T/lodash", "require.resolve"));
+
+      code = "const _ = require.resolve('lodash')";
+      expect(transform(code)).to.equal(tmpl.requireAssign("lodash", "_", "require.resolve"));
+
+      code = "const _ = require.resolve('T/lodash')";
+      expect(transform(code, { T: "foo" }))
+        .to.equal(tmpl.requireAssign("T/lodash", "_", "require.resolve"));
+    });
+
     it("leaves unmatched requires unchanged");
     it("replaces matched token require");
     it("replaces matched token in nested require");
