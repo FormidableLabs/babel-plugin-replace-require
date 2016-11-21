@@ -125,8 +125,28 @@ describe("index", () => {
         .to.equal(tmpl.requireAssign("T/lodash", "_", "require.resolve"));
     });
 
-    it("leaves unmatched requires unchanged");
-    it("replaces matched token require");
+    it("leaves unmatched requires unchanged", () => {
+      let code;
+
+      code = "require('TOKEN/lodash')";
+      expect(transform(code)).to.equal(tmpl.require("TOKEN/lodash"));
+
+      code = "const _ = require('TOKEN/lodash')";
+      expect(transform(code)).to.equal(tmpl.requireAssign("TOKEN/lodash", "_"));
+    });
+
+    it("replaces matched token require", () => {
+      const TOKEN = "require('another-module/foo/bar/yo')";
+      const trans = (c) => transform(c, { TOKEN });
+      let code;
+
+      code = "require('TOKEN/lodash')";
+      expect(trans(code)).to.equal(tmpl.require("lodash", TOKEN));
+
+      code = "const _ = require('TOKEN/lodash')";
+      expect(trans(code)).to.equal(tmpl.requireAssign("lodash", "_", TOKEN));
+    });
+
     it("replaces matched token in nested require");
   });
 });
