@@ -58,10 +58,34 @@ describe("index", () => {
       code = "import * as lodash from 'TOKEN/lodash'";
       expect(trans(code)).to.equal(tmpl.importWildcard("lodash", "lodash", TOKEN));
     });
+
+
+    it("replaces advanced expression token require", () => {
+      const TOKEN = "require('another-module/foo/bar/yo')";
+      const trans = (c) => transform(c, { TOKEN });
+      let code;
+
+      code = "import _ from 'TOKEN/lodash'";
+      expect(trans(code)).to.equal(tmpl.importDefault("lodash", TOKEN));
+
+      code = "import { foo } from 'TOKEN/foo/bar/baz'";
+      expect(trans(code)).to.equal(tmpl.importMembers("foo/bar/baz", TOKEN));
+
+      code = "import * as lodash from 'TOKEN/lodash'";
+      expect(trans(code)).to.equal(tmpl.importWildcard("lodash", "lodash", TOKEN));
+    });
   });
 
   describe("require", () => {
-    it("errors on invalid code expressions");
+    it.skip("errors on invalid code expressions", () => {
+      const TOKEN = "BAD \\";
+      const trans = (c) => transform(c, { TOKEN });
+      let code;
+
+      code = "require('lodash')";
+      expect(trans(code)).to.equal(tmpl.require("lodash", TOKEN));
+    });
+
     it("doesn't change with empty options");
     it("doesn't change with empty options");
     it("doesn't change require.resolve even with token");

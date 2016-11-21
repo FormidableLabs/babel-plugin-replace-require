@@ -5,6 +5,18 @@ const path = require("path");
 
 const trim = (val) => val.trim().replace(/^[ ]*/gm, "");
 
+module.exports.require = (modPath, req) => trim(
+  `'use strict';
+
+  ${req || "require"}('${modPath}');`
+);
+
+module.exports.requireAssign = (modPath, mod, req) => trim(
+  `'use strict';
+
+  var ${mod} = ${req || "require"}('${modPath}');`
+);
+
 module.exports.importDefault = (modPath, req) => {
   const mod = path.basename(modPath);
   return trim(

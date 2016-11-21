@@ -1,5 +1,20 @@
 import * as babylon from "babylon";
 
+// Parse options values.
+const _parseOpts = (opts) => Object.keys(opts)
+  .map((key) =>
+    [key, babylon.parse(`expr=${opts[key]}`).program.body.pop().expression.right])
+  .reduce((memo, pair) => {
+    memo[pair[0]] = pair[1];
+    return memo;
+  }, {});
+
+// Parse, cache, and get options
+const _getOpts = function (ctxt, opts) {
+  ctxt._opts = ctxt._opts || _parseOpts(opts);
+  return ctxt._opts;
+};
+
 export default function ({ types: t }) {
   return {
     visitor: {
@@ -7,7 +22,7 @@ export default function ({ types: t }) {
       CallExpression(path, state) {
         const node = path.node;
         const args = node.arguments || [];
-        const opts = state.opts;
+        const opts = _getOpts(this, state.opts);
 
         if (node.callee.name === "require" && args.length === 1 && t.isStringLiteral(args[0])) {
           const src = args[0].value;
@@ -22,7 +37,7 @@ export default function ({ types: t }) {
             // Parse the matched replacement expression and replace callee.
             // https://github.com/babel/babylon/issues/210
             try {
-              node.callee = babylon.parse(`expr=${replace}`).program.body.pop().expression.right;
+              node.callee = replace;
             } catch (err) {
               throw path.buildCodeFrameError(err);
             }
