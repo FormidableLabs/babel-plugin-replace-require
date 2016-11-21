@@ -5,12 +5,12 @@ const path = require("path");
 
 const trim = (val) => val.trim().replace(/^[ ]*/gm, "");
 
-module.exports.importDefault = (modPath) => {
+module.exports.importDefault = (modPath, req) => {
   const mod = path.basename(modPath);
   return trim(
     `'use strict';
 
-    var _${mod} = require('${modPath}');
+    var _${mod} = ${req || "require"}('${modPath}');
 
     var _${mod}2 = _interopRequireDefault(_${mod});
 
@@ -18,18 +18,18 @@ module.exports.importDefault = (modPath) => {
   );
 };
 
-module.exports.importMembers = (modPath) => trim(
+module.exports.importMembers = (modPath, req) => trim(
   `'use strict';
 
-  var _${path.basename(modPath)} = require('${modPath}');`
+  var _${path.basename(modPath)} = ${req || "require"}('${modPath}');`
 );
 
-module.exports.importWildcard = (modPath, alias) => {
+module.exports.importWildcard = (modPath, alias, req) => {
   const mod = path.basename(modPath);
   return trim(
     `'use strict';
 
-    var _${mod} = require('${modPath}');
+    var _${mod} = ${req || "require"}('${modPath}');
 
     var ${alias} = _interopRequireWildcard(_${mod});
 

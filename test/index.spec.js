@@ -31,8 +31,33 @@ describe("index", () => {
       expect(transform(code)).to.equal(tmpl.importWildcard("lodash", "lodash"));
     });
 
-    it("leaves unmatched imports unchanged");
-    it("replaces matched token require");
+    it("leaves unmatched imports unchanged", () => {
+      let code;
+
+      code = "import _ from 'TOKEN/lodash'";
+      expect(transform(code)).to.equal(tmpl.importDefault("TOKEN/lodash"));
+
+      code = "import { foo } from 'TOKEN/foo/bar/baz'";
+      expect(transform(code)).to.equal(tmpl.importMembers("TOKEN/foo/bar/baz"));
+
+      code = "import * as lodash from 'TOKEN/lodash'";
+      expect(transform(code)).to.equal(tmpl.importWildcard("TOKEN/lodash", "lodash"));
+    });
+
+    it("replaces matched token require", () => {
+      const TOKEN = "token";
+      const trans = (c) => transform(c, { TOKEN });
+      let code;
+
+      code = "import _ from 'TOKEN/lodash'";
+      expect(trans(code)).to.equal(tmpl.importDefault("lodash", TOKEN));
+
+      code = "import { foo } from 'TOKEN/foo/bar/baz'";
+      expect(trans(code)).to.equal(tmpl.importMembers("foo/bar/baz", TOKEN));
+
+      code = "import * as lodash from 'TOKEN/lodash'";
+      expect(trans(code)).to.equal(tmpl.importWildcard("lodash", "lodash", TOKEN));
+    });
   });
 
   describe("require", () => {
