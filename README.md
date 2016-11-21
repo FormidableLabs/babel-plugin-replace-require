@@ -46,12 +46,31 @@ $ npm install babel-plugin-replace-require
 {
   "plugins": [
     ["replace-require", {
-      "BETTER_REQUIRE": "global.myBetterRequire"
+      "GLOBAL_REQUIRE": "global.myBetterRequire",
+      "REQUIRED_REQUIRE": "require('require-from-somewhere-else')"
     }]
   ]
 }
 ```
 
+## Related Projects
+
+*Builder*
+
+This plugin was written to help implement the
+[module pattern][] in [`builder`](http://formidable.com/open-source/builder/)
+archetypes for enabling dependency encapsulation.
+
+*Webpack*
+
+This plugin is useful for code patterns that work in Node.js for alternate
+`require`'s. If the code needs to run on the frontend via webpack, the
+[`webpack-alternate-require-loader`](https://github.com/FormidableLabs/webpack-alternate-require-loader)
+can further process the output of this plugin into fully-resolved modules
+analogous to what Node.js would do.
+
 ## Contributions
 
 Contributions welcome! See [CONTRIBUTING.md](CONTRIBUTING.md)
+
+[module pattern]: https://github.com/FormidableLabs/builder#node-require-resolution-and-module-pattern
