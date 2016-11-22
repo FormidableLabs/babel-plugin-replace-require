@@ -36,13 +36,12 @@ $ npm install babel-plugin-replace-require
 
 ## Usage
 
-```
-// TODO: DOCUMENT Expressions
-```
+Provide an object of token, code replacement string pairs. The code replacement
+expressions are actually _parsed_ and inserted into the AST.
 
-**.babelrc**
+**.babelrc**: Our configuration
 
-```json
+```js
 {
   "plugins": [
     ["replace-require", {
@@ -53,15 +52,39 @@ $ npm install babel-plugin-replace-require
 }
 ```
 
+**src/index.js**: A source file with es6 / Node.js type imports.
+
+```js
+// es6 style
+import foo from "GLOBAL_REQUIRE/foo";
+
+// CommonJS style
+const foo = require("REQUIRED_REQUIRE/foo");
+```
+
+**lib/index.js**: The outputted file, processed by the plugin.
+
+```js
+// es6 style
+var _foo = global.myBetterRequire("foo");
+
+var _foo2 = _interopRequireDefault(_foo);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+// CommonJS style
+var bar = require('require-from-somewhere-else')("bar");
+```
+
 ## Related Projects
 
-*Builder*
+### Builder
 
 This plugin was written to help implement the
 [module pattern][] in [`builder`](http://formidable.com/open-source/builder/)
 archetypes for enabling dependency encapsulation.
 
-*Webpack*
+### Webpack
 
 This plugin is useful for code patterns that work in Node.js for alternate
 `require`'s. If the code needs to run on the frontend via webpack, the
