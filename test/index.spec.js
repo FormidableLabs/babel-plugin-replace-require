@@ -18,6 +18,13 @@ const transform = (code, opts) => {
 };
 
 describe("index", () => {
+  // Babel has some odd slow warmup behavior. This warms up the babel code.
+  // Need to log out to actually force code execution.
+  before(function () {
+    this.timeout(10000); // eslint-disable-line no-invalid-this,no-magic-numbers
+    transform("import _ from 'lodash'");
+  });
+
   describe("import", () => {
     it("doesn't change with empty options", () => {
       let code;
