@@ -6,6 +6,7 @@ const babel = require("babel-core");
 const pluginPath = require.resolve("../lib/index");
 
 const tmpl = require("./helpers/templates");
+const trim = require("./helpers/string").trim;
 
 const transform = (code, opts) => {
   return babel.transform(code, {
@@ -147,6 +148,40 @@ describe("index", () => {
       expect(trans(code)).to.equal(tmpl.requireAssign("lodash", "_", TOKEN));
     });
 
-    it("replaces matched token in nested require");
+    it("replaces matched token in nested require", () => {
+      const T1 = "require('alternate')";
+      const T2 = "require('bizarre')";
+      const trans = (c) => transform(c, { T1, T2 });
+
+      expect(trans(trim(
+        `
+        "use strict";
+
+        module.exports = {
+          foo: () => require("T1/foo"),
+          bar: {
+            baz: () => require("T2/baz")
+          },
+          noMatch: () => require("NO_MATCH/tough")
+        };`
+      ))).to.equal(trim(
+        `
+        "use strict";
+
+        module.exports = {
+          foo: function foo() {
+            return require('alternate')("foo");
+          },
+          bar: {
+            baz: function baz() {
+              return require('bizarre')("baz");
+            }
+          },
+          noMatch: function noMatch() {
+            return require("NO_MATCH/tough");
+          }
+        };`
+      ));
+    });
   });
 });

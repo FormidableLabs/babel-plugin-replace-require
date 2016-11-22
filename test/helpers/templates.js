@@ -3,16 +3,18 @@
 
 const path = require("path");
 
-const trim = (val) => val.trim().replace(/^[ ]*/gm, "");
+const trim = require("./string").trim;
 
 module.exports.require = (modPath, req) => trim(
-  `'use strict';
+  `
+  'use strict';
 
   ${req || "require"}('${modPath}');`
 );
 
 module.exports.requireAssign = (modPath, mod, req) => trim(
-  `'use strict';
+  `
+  'use strict';
 
   var ${mod} = ${req || "require"}('${modPath}');`
 );
@@ -20,7 +22,8 @@ module.exports.requireAssign = (modPath, mod, req) => trim(
 module.exports.importDefault = (modPath, req) => {
   const mod = path.basename(modPath);
   return trim(
-    `'use strict';
+    `
+    'use strict';
 
     var _${mod} = ${req || "require"}('${modPath}');
 
@@ -31,7 +34,8 @@ module.exports.importDefault = (modPath, req) => {
 };
 
 module.exports.importMembers = (modPath, req) => trim(
-  `'use strict';
+  `
+  'use strict';
 
   var _${path.basename(modPath)} = ${req || "require"}('${modPath}');`
 );
@@ -39,7 +43,8 @@ module.exports.importMembers = (modPath, req) => trim(
 module.exports.importWildcard = (modPath, alias, req) => {
   const mod = path.basename(modPath);
   return trim(
-    `'use strict';
+    `
+    'use strict';
 
     var _${mod} = ${req || "require"}('${modPath}');
 
