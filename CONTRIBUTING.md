@@ -9,13 +9,10 @@ Run `npm run builder:check`
 
 ## Release
 
-For tagged official releases _only_, make sure to:
-
-1. Update appropriate `HISTORY.md` notes
-2. Run the following steps:
+We use an `npm version` release workflow:
 
 ```sh
-# Update history
+# Update history + commit
 $ vim history
 
 # Make sure you have a clean, up-to-date `master`

@@ -1,3 +1,4 @@
 ---
 extends:
   - "formidable/configurations/es6-test"
+  - "formidable/configurations/es6-node"
