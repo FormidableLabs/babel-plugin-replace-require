@@ -40,8 +40,10 @@ export default function ({ types: t }) {
           // Parse options and mutate with first match.
           const replace = opts[Object.keys(opts).find((k) => k === first)];
           if (replace) {
-            // Rewrite the `require`, then the module argument with stripped module path.
-            node.callee = replace;
+            // Rewrite `require` with a clone of stashed node.
+            node.callee = Object.assign({}, replace);
+
+            // Replace module argument with stripped module path.
             args[0].value = mod;
           }
         }
