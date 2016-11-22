@@ -2,8 +2,11 @@ import * as babylon from "babylon";
 
 // Parse options values.
 const _parseOpts = (opts) => Object.keys(opts)
+  // Parse the matched replacement expression and
+  // https://github.com/babel/babylon/issues/210
   .map((key) =>
     [key, babylon.parse(`expr=${opts[key]}`).program.body.pop().expression.right])
+  // Objectify.
   .reduce((memo, pair) => {
     memo[pair[0]] = pair[1];
     return memo;
@@ -32,17 +35,8 @@ export default function ({ types: t }) {
           // Parse options and mutate with first match.
           const replace = opts[Object.keys(opts).find((k) => k === first)];
           if (replace) {
-            // Rewrite the `require`, then the module argument.
-
-            // Parse the matched replacement expression and replace callee.
-            // https://github.com/babel/babylon/issues/210
-            try {
-              node.callee = replace;
-            } catch (err) {
-              throw path.buildCodeFrameError(err);
-            }
-
-            // Replace module argument with token stripped.
+            // Rewrite the `require`, then the module argument with stripped module path.
+            node.callee = replace;
             args[0].value = mod;
           }
         }
