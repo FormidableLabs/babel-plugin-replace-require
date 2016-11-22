@@ -1,11 +1,16 @@
 import * as babylon from "babylon";
 
 // Parse options values.
-const _parseOpts = (opts) => Object.keys(opts)
-  // Parse the matched replacement expression and
+const _parseOpts = (path, opts) => Object.keys(opts)
+  // Parse the matched replacement expression.
   // https://github.com/babel/babylon/issues/210
-  .map((key) =>
-    [key, babylon.parse(`expr=${opts[key]}`).program.body.pop().expression.right])
+  .map((key) => {
+    try {
+      return [key, babylon.parse(`expr=${opts[key]}`).program.body.pop().expression.right];
+    } catch (err) {
+      throw path.buildCodeFrameError(err);
+    }
+  })
   // Objectify.
   .reduce((memo, pair) => {
     memo[pair[0]] = pair[1];
@@ -13,8 +18,8 @@ const _parseOpts = (opts) => Object.keys(opts)
   }, {});
 
 // Parse, cache, and get options
-const _getOpts = function (ctxt, opts) {
-  ctxt._opts = ctxt._opts || _parseOpts(opts);
+const _getOpts = function (ctxt, path, opts) {
+  ctxt._opts = ctxt._opts || _parseOpts(path, opts);
   return ctxt._opts;
 };
 
@@ -25,7 +30,7 @@ export default function ({ types: t }) {
       CallExpression(path, state) {
         const node = path.node;
         const args = node.arguments || [];
-        const opts = _getOpts(this, state.opts);
+        const opts = _getOpts(this, path, state.opts);
 
         if (node.callee.name === "require" && args.length === 1 && t.isStringLiteral(args[0])) {
           const src = args[0].value;
