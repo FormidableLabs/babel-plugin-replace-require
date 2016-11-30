@@ -1,6 +1,6 @@
 {
   "name": "babel-plugin-replace-require",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Replace require output generated from import calls.",
   "main": "lib/index.js",
   "dependencies": {

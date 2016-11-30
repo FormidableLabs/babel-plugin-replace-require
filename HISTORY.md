@@ -1,7 +1,7 @@
 History
 =======
 
-## Unreleased
+## 0.0.4
 
 * Preserve `loc` when rewriting `require`s.
   [#2](https://github.com/FormidableLabs/babel-plugin-replace-require/issues/2)
