@@ -64,7 +64,7 @@ itself be subsequently matched/replaced by the plugin.
 import foo from "GLOBAL_REQUIRE/foo";
 
 // CommonJS style
-const foo = require("REQUIRED_REQUIRE/foo");
+const bar = require("REQUIRED_REQUIRE/bar");
 ```
 
 **lib/index.js**: The outputted file, processed by the plugin.
