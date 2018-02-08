@@ -36,8 +36,12 @@ $ npm install babel-plugin-replace-require
 
 ## Usage
 
-Provide an object of token, code replacement string pairs. The code replacement
-expressions are actually _parsed_ and inserted into the AST.
+The options passed to the plugin should be an object of [token, code
+replacement string] pairs. Tokens will be matched against the import's
+argument; matches will be replaced as shown below.
+
+__Note__: The code replacement expressions are actually _parsed_ and inserted
+into the AST.
 
 **.babelrc**: Our configuration
 
