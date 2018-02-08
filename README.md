@@ -41,7 +41,8 @@ replacement string] pairs. Tokens will be matched against the import's
 argument; matches will be replaced as shown below.
 
 __Note__: The code replacement expressions are actually _parsed_ and inserted
-into the AST.
+into the AST. It's therefore possible for the replacement expression to
+itself be subsequently matched/replaced by the plugin.
 
 **.babelrc**: Our configuration
 
